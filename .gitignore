@@ -1,0 +1,7 @@
+out/
+.idea/
+*.iml
+*.class
+src/sources.txt
+src/sources.txtjavac
+src/{config,models,services,ui/
