@@ -15,15 +15,16 @@ public class Employee {
     private String    password;
     private LocalDate joinDate;
 
-    // ── NEW ──────────────────────────────────────────
-    private String    shift;       // "Morning" | "Evening" | "Night"
-    private LocalTime shiftStart;  // e.g. 09:00
+    // Shift Management Fields
+    private String    shift;
+    private LocalTime shiftStart;
 
     public Employee() {}
 
     public Employee(int empId, String name, String email, String phone,
                     String department, String designation,
                     String role, String password) {
+
         this.empId       = empId;
         this.name        = name;
         this.email       = email;
@@ -35,31 +36,103 @@ public class Employee {
         this.joinDate    = LocalDate.now();
     }
 
-    // existing getters / setters
-    public int       getEmpId()                      { return empId; }
-    public void      setEmpId(int empId)             { this.empId = empId; }
-    public String    getName()                       { return name; }
-    public void      setName(String name)            { this.name = name; }
-    public String    getEmail()                      { return email; }
-    public void      setEmail(String email)          { this.email = email; }
-    public String    getPhone()                      { return phone; }
-    public void      setPhone(String phone)          { this.phone = phone; }
-    public int       getDeptId()                     { return deptId; }
-    public void      setDeptId(int deptId)           { this.deptId = deptId; }
-    public String    getDepartment()                 { return department; }
-    public void      setDepartment(String d)         { this.department = d; }
-    public String    getDesignation()                { return designation; }
-    public void      setDesignation(String d)        { this.designation = d; }
-    public String    getRole()                       { return role; }
-    public void      setRole(String role)            { this.role = role; }
-    public String    getPassword()                   { return password; }
-    public void      setPassword(String password)    { this.password = password; }
-    public LocalDate getJoinDate()                   { return joinDate; }
-    public void      setJoinDate(LocalDate joinDate) { this.joinDate = joinDate; }
+    // Getters and Setters
 
-    // new shift getters / setters
-    public String    getShift()                      { return shift; }
-    public void      setShift(String shift)          { this.shift = shift; }
-    public LocalTime getShiftStart()                 { return shiftStart; }
-    public void      setShiftStart(LocalTime t)      { this.shiftStart = t; }
+    public int getEmpId() {
+        return empId;
+    }
+
+    public void setEmpId(int empId) {
+        this.empId = empId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(int deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDate getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDate joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    // Shift Methods
+
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
+    }
+
+    public LocalTime getShiftStart() {
+        return shiftStart;
+    }
+
+    public void setShiftStart(LocalTime shiftStart) {
+        this.shiftStart = shiftStart;
+    }
 }
