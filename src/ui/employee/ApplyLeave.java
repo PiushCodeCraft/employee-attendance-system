@@ -1,19 +1,18 @@
 package ui.employee;
 
+import java.awt.*;
+import java.time.LocalDate;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import models.Employee;
 import models.LeaveBalance;
 import models.LeaveRequest;
 import services.LeaveService;
 import utils.Theme;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.time.LocalDate;
-
 public class ApplyLeave extends JPanel {
 
-    private final Employee employee;
+    private final Employee     employee;
     private final LeaveService leaveService;
 
     public ApplyLeave(Employee employee, LeaveService leaveService) {
@@ -25,23 +24,24 @@ public class ApplyLeave extends JPanel {
     }
 
     private void initUI() {
-        add(Theme.label("Apply for Leave", Theme.bold(22), Theme.TEXT_PRIMARY), BorderLayout.NORTH);
+        add(Theme.label("Apply for Leave", Theme.bold(22), Theme.TEXT_PRIMARY),
+            BorderLayout.NORTH);
 
         JPanel body = new JPanel(new GridLayout(1, 2, 20, 0));
         body.setOpaque(false);
 
-        // Form card
+        // ── form card ─────────────────────────────────────────────────────────
         JPanel formCard = Theme.card();
         formCard.setLayout(new GridBagLayout());
         formCard.setBorder(new EmptyBorder(28, 28, 28, 28));
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(8, 4, 8, 4);
-        g.fill = GridBagConstraints.HORIZONTAL;
+        g.fill   = GridBagConstraints.HORIZONTAL;
 
-        JComboBox<String> typeCombo = Theme.comboBox(new String[]{"Sick", "Casual", "Earned"});
-        JTextField fromField = Theme.textField(14);
-        JTextField toField   = Theme.textField(14);
-        JTextField reasonField = Theme.textField(14);
+        JComboBox<String> typeCombo   = Theme.comboBox(new String[]{"Sick","Casual","Earned"});
+        JTextField        fromField   = Theme.textField(14);
+        JTextField        toField     = Theme.textField(14);
+        JTextField        reasonField = Theme.textField(14);
 
         Object[][] rows = {
             {"Leave Type",             typeCombo},
@@ -70,14 +70,18 @@ public class ApplyLeave extends JPanel {
             try {
                 LocalDate from = LocalDate.parse(fromField.getText().trim());
                 LocalDate to   = LocalDate.parse(toField.getText().trim());
-                if (to.isBefore(from)) { resultLbl.setForeground(Theme.ACCENT_RED); resultLbl.setText("To date must be after From date."); return; }
+                if (to.isBefore(from)) {
+                    resultLbl.setForeground(Theme.ACCENT_RED);
+                    resultLbl.setText("To date must be after From date.");
+                    return;
+                }
                 LeaveRequest lr = new LeaveRequest();
-                lr.setEmpId(employee.getEmpId());
-                lr.setEmpName(employee.getName());
+                lr.setEmpId    (employee.getEmpId());
+                lr.setEmpName  (employee.getName());
                 lr.setLeaveType((String) typeCombo.getSelectedItem());
-                lr.setFromDate(from);
-                lr.setToDate(to);
-                lr.setReason(reasonField.getText().trim());
+                lr.setFromDate (from);
+                lr.setToDate   (to);
+                lr.setReason   (reasonField.getText().trim());
                 String result = leaveService.applyLeave(lr);
                 boolean ok = result.contains("successfully");
                 resultLbl.setForeground(ok ? Theme.ACCENT_GREEN : Theme.ACCENT_RED);
@@ -91,24 +95,24 @@ public class ApplyLeave extends JPanel {
 
         body.add(formCard);
 
-        // Balance card
+        // ── balance card ──────────────────────────────────────────────────────
         JPanel balCard = Theme.card();
         balCard.setLayout(new GridBagLayout());
         balCard.setBorder(new EmptyBorder(28, 28, 28, 28));
         GridBagConstraints gb = new GridBagConstraints();
         gb.insets = new Insets(8, 0, 8, 0);
-        gb.fill = GridBagConstraints.HORIZONTAL;
-        gb.gridwidth = 1;
+        gb.fill   = GridBagConstraints.HORIZONTAL;
+        gb.gridwidth = 2;
 
-        gb.gridy = 0; gb.gridwidth = 2;
+        gb.gridy = 0;
         balCard.add(Theme.label("Your Leave Balance", Theme.bold(16), Theme.TEXT_PRIMARY), gb);
 
         LeaveBalance bal = leaveService.getLeaveBalance(employee.getEmpId());
         if (bal != null) {
             String[][] balRows = {
-                {"🤒  Sick Leave",   String.valueOf(bal.getSickLeave())   + " days"},
-                {"☀  Casual Leave",  String.valueOf(bal.getCasualLeave()) + " days"},
-                {"🌟  Earned Leave", String.valueOf(bal.getEarnedLeave()) + " days"}
+                {"🤒  Sick Leave",   bal.getSickLeave()   + " days"},
+                {"☀  Casual Leave",  bal.getCasualLeave() + " days"},
+                {"🌟  Earned Leave", bal.getEarnedLeave() + " days"}
             };
             for (int i = 0; i < balRows.length; i++) {
                 gb.gridy = i + 1; gb.gridwidth = 1;
@@ -120,7 +124,6 @@ public class ApplyLeave extends JPanel {
                 balCard.add(v, gb);
             }
         }
-
         body.add(balCard);
         add(body, BorderLayout.CENTER);
     }

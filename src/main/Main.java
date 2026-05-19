@@ -1,13 +1,11 @@
 package main;
 
+import javax.swing.*;
 import ui.LoginFrame;
 import utils.Theme;
 
-import javax.swing.*;
-
 public class Main {
     public static void main(String[] args) {
-        // Use system rendering for better fonts
         System.setProperty("awt.useSystemAAFontSettings", "on");
         System.setProperty("swing.aatext", "true");
 
@@ -15,7 +13,6 @@ public class Main {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception ignored) {}
 
-        // Global UI defaults
         UIManager.put("OptionPane.background",        Theme.BG_CARD);
         UIManager.put("Panel.background",             Theme.BG_CARD);
         UIManager.put("OptionPane.messageForeground", Theme.TEXT_PRIMARY);

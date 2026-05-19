@@ -1,6 +1,8 @@
 package services;
 
 import models.Employee;
+
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,18 +10,26 @@ import java.util.List;
 public class EmployeeService {
 
     private static List<Employee> employees = new ArrayList<>(Arrays.asList(
-        new Employee(1, "Admin User",   "admin@company.com", "9999999999", "Human Resources", "HR Manager",          "admin",    "admin123"),
-        new Employee(2, "John Doe",     "john@company.com",  "9876543210", "Engineering",     "Software Engineer",   "employee", "john123"),
-        new Employee(3, "Jane Smith",   "jane@company.com",  "9123456789", "Finance",         "Accountant",          "employee", "jane123"),
-        new Employee(4, "Ravi Kumar",   "ravi@company.com",  "9988776655", "Engineering",     "Backend Developer",   "employee", "ravi123"),
-        new Employee(5, "Priya Nair",   "priya@company.com", "9876001234", "Marketing",       "Marketing Executive", "employee", "priya123")
+        new Employee(1, "Admin User", "admin@company.com", "9999999999",
+                     "Human Resources", "HR Manager",          "admin",    "admin123"),
+        new Employee(2, "John Doe",   "john@company.com",  "9876543210",
+                     "Engineering",    "Software Engineer",   "employee", "john123"),
+        new Employee(3, "Jane Smith", "jane@company.com",  "9123456789",
+                     "Finance",        "Accountant",          "employee", "jane123"),
+        new Employee(4, "Ravi Kumar", "ravi@company.com",  "9988776655",
+                     "Engineering",    "Backend Developer",   "employee", "ravi123"),
+        new Employee(5, "Priya Nair", "priya@company.com", "9876001234",
+                     "Marketing",      "Marketing Executive", "employee", "priya123")
     ));
 
     private static int nextId = 6;
 
+    // ── existing methods ─────────────────────────────────────────────────────
+
     public Employee login(String email, String password) {
         return employees.stream()
-            .filter(e -> e.getEmail().equalsIgnoreCase(email) && e.getPassword().equals(password))
+            .filter(e -> e.getEmail().equalsIgnoreCase(email)
+                      && e.getPassword().equals(password))
             .findFirst().orElse(null);
     }
 
@@ -48,6 +58,18 @@ public class EmployeeService {
     }
 
     public Employee getEmployee(int empId) {
-        return employees.stream().filter(e -> e.getEmpId() == empId).findFirst().orElse(null);
+        return employees.stream()
+            .filter(e -> e.getEmpId() == empId)
+            .findFirst().orElse(null);
+    }
+
+    // ── NEW: assign shift ────────────────────────────────────────────────────
+
+    public boolean assignShift(int empId, String shift, LocalTime shiftStart) {
+        Employee e = getEmployee(empId);
+        if (e == null) return false;
+        e.setShift(shift);
+        e.setShiftStart(shiftStart);
+        return true;
     }
 }

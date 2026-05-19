@@ -1,20 +1,18 @@
 package ui.admin;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import models.Employee;
 import services.EmployeeService;
 import utils.Theme;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-// import java.util.List;
-
 public class ManageEmployees extends JPanel {
 
     private final EmployeeService empService;
-    private DefaultTableModel tableModel;
-    private JTable table;
+    private DefaultTableModel     tableModel;
+    private JTable                table;
 
     public ManageEmployees(EmployeeService empService) {
         this.empService = empService;
@@ -25,43 +23,37 @@ public class ManageEmployees extends JPanel {
     }
 
     private void initUI() {
-        // Header
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
-        header.add(Theme.label("Manage Employees", Theme.bold(22), Theme.TEXT_PRIMARY), BorderLayout.WEST);
+        header.add(Theme.label("Manage Employees", Theme.bold(22), Theme.TEXT_PRIMARY),
+                   BorderLayout.WEST);
 
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnRow.setOpaque(false);
         JButton addBtn = Theme.button("+ Add Employee", Theme.ACCENT_BLUE);
-        JButton delBtn = Theme.button("Delete", Theme.ACCENT_RED);
+        JButton delBtn = Theme.button("Delete",         Theme.ACCENT_RED);
         addBtn.addActionListener(e -> showAddDialog());
         delBtn.addActionListener(e -> deleteSelected());
-        btnRow.add(delBtn);
-        btnRow.add(addBtn);
+        btnRow.add(delBtn); btnRow.add(addBtn);
         header.add(btnRow, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
 
-        // Table
-        String[] cols = {"ID", "Name", "Email", "Phone", "Department", "Designation", "Role"};
+        String[] cols = {"ID","Name","Email","Phone","Department","Designation","Role"};
         tableModel = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         table = new JTable(tableModel);
         Theme.styleTable(table);
-
-        // Custom renderer for role badge
-        table.getColumnModel().getColumn(6).setCellRenderer((tbl, val, sel, foc, row, col) -> {
-            return Theme.badge(val != null ? val.toString() : "");
-        });
+        table.getColumnModel().getColumn(6).setCellRenderer(
+            (t, v, s, f, row, col) -> Theme.badge(v != null ? v.toString() : ""));
 
         JScrollPane sp = new JScrollPane(table);
         Theme.styleScrollPane(sp);
-
-        JPanel tableCard = Theme.card();
-        tableCard.setLayout(new BorderLayout());
-        tableCard.setBorder(new EmptyBorder(0, 0, 0, 0));
-        tableCard.add(sp, BorderLayout.CENTER);
-        add(tableCard, BorderLayout.CENTER);
+        JPanel card = Theme.card();
+        card.setLayout(new BorderLayout());
+        card.setBorder(new EmptyBorder(0, 0, 0, 0));
+        card.add(sp, BorderLayout.CENTER);
+        add(card, BorderLayout.CENTER);
     }
 
     private void loadData() {
@@ -75,7 +67,8 @@ public class ManageEmployees extends JPanel {
     }
 
     private void showAddDialog() {
-        JDialog dlg = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Employee", true);
+        JDialog dlg = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
+                                  "Add Employee", true);
         dlg.setSize(440, 460);
         dlg.setLocationRelativeTo(this);
         dlg.getContentPane().setBackground(Theme.BG_CARD);
@@ -85,20 +78,22 @@ public class ManageEmployees extends JPanel {
         p.setBorder(new EmptyBorder(24, 24, 24, 24));
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(6, 4, 6, 4);
-        g.fill = GridBagConstraints.HORIZONTAL;
+        g.fill   = GridBagConstraints.HORIZONTAL;
 
-        JTextField name  = Theme.textField(18);
-        JTextField email = Theme.textField(18);
-        JTextField phone = Theme.textField(18);
-        JTextField desig = Theme.textField(18);
-        JTextField pass  = Theme.textField(18);
-        String[] depts = {"Engineering", "Human Resources", "Finance", "Marketing", "Operations"};
-        JComboBox<String> dept = Theme.comboBox(depts);
-        JComboBox<String> role = Theme.comboBox(new String[]{"employee", "admin"});
+        JTextField     name  = Theme.textField(18);
+        JTextField     email = Theme.textField(18);
+        JTextField     phone = Theme.textField(18);
+        JTextField     desig = Theme.textField(18);
+        JTextField     pass  = Theme.textField(18);
+        JComboBox<String> dept = Theme.comboBox(
+            new String[]{"Engineering","Human Resources","Finance","Marketing","Operations"});
+        JComboBox<String> role = Theme.comboBox(new String[]{"employee","admin"});
 
         Object[][] rows = {
-            {"Name", name}, {"Email", email}, {"Phone", phone},
-            {"Designation", desig}, {"Department", dept}, {"Role", role}, {"Password", pass}
+            {"Name",        name},  {"Email",      email},
+            {"Phone",       phone}, {"Designation",desig},
+            {"Department",  dept},  {"Role",       role},
+            {"Password",    pass}
         };
         for (int i = 0; i < rows.length; i++) {
             g.gridx = 0; g.gridy = i; g.weightx = 0.3;
@@ -114,13 +109,13 @@ public class ManageEmployees extends JPanel {
 
         save.addActionListener(e -> {
             Employee emp = new Employee();
-            emp.setName(name.getText().trim());
-            emp.setEmail(email.getText().trim());
-            emp.setPhone(phone.getText().trim());
+            emp.setName       (name.getText().trim());
+            emp.setEmail      (email.getText().trim());
+            emp.setPhone      (phone.getText().trim());
             emp.setDesignation(desig.getText().trim());
-            emp.setDepartment((String) dept.getSelectedItem());
-            emp.setRole((String) role.getSelectedItem());
-            emp.setPassword(pass.getText().trim());
+            emp.setDepartment ((String) dept.getSelectedItem());
+            emp.setRole       ((String) role.getSelectedItem());
+            emp.setPassword   (pass.getText().trim());
             empService.registerEmployee(emp);
             loadData();
             dlg.dispose();
@@ -134,7 +129,8 @@ public class ManageEmployees extends JPanel {
         int row = table.getSelectedRow();
         if (row == -1) { JOptionPane.showMessageDialog(this, "Select an employee first."); return; }
         int id = (int) tableModel.getValueAt(row, 0);
-        int c = JOptionPane.showConfirmDialog(this, "Delete this employee?", "Confirm", JOptionPane.YES_NO_OPTION);
+        int c  = JOptionPane.showConfirmDialog(this, "Delete this employee?",
+                     "Confirm", JOptionPane.YES_NO_OPTION);
         if (c == JOptionPane.YES_OPTION) { empService.deleteEmployee(id); loadData(); }
     }
 }

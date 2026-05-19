@@ -1,14 +1,12 @@
 package ui;
 
-import utils.Theme;
-
-import javax.swing.*;
-// import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
+import utils.Theme;
 
 public class SidebarPanel extends JPanel {
 
@@ -45,22 +43,20 @@ public class SidebarPanel extends JPanel {
     }
 
     class SidebarItem extends JPanel {
-        final String icon, label;
-        final int index;
+        final String  icon, label;
+        final int     index;
         final Runnable action;
         boolean hovered = false;
 
         SidebarItem(String icon, String label, int index, Runnable action) {
-            this.icon = icon; this.label = label; this.index = index; this.action = action;
+            this.icon = icon; this.label = label;
+            this.index = index; this.action = action;
             setOpaque(false);
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             addMouseListener(new MouseAdapter() {
-                public void mouseEntered(MouseEvent e) { hovered = true; repaint(); }
-                public void mouseExited(MouseEvent e) { hovered = false; repaint(); }
-                public void mouseClicked(MouseEvent e) {
-                    select(index);
-                    action.run();
-                }
+                public void mouseEntered(MouseEvent e) { hovered = true;  repaint(); }
+                public void mouseExited (MouseEvent e) { hovered = false; repaint(); }
+                public void mouseClicked(MouseEvent e) { select(index);   action.run(); }
             });
         }
 
