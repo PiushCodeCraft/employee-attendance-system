@@ -47,11 +47,11 @@ public class EmployeeDashboard extends JFrame {
         root.add(buildTopBar(), BorderLayout.NORTH);
 
         sidebar = new SidebarPanel();
-        sidebar.addItem("⊞", "My Dashboard", () -> showPanel(buildHomePanel()));
+        sidebar.addItem("🏠", "My Dashboard", () -> showPanel(buildHomePanel()));
         sidebar.addItem("🕐", "Mark Attendance", () -> showPanel(new MarkAttendance(employee, attService)));
         sidebar.addItem("📋", "My Attendance", () -> showPanel(new ViewMyAttendance(employee, attService)));
         sidebar.addItem("🗓", "Apply Leave", () -> showPanel(new ApplyLeave(employee, leaveService)));
-        sidebar.addItem("⏻", "Logout", this::logout);
+        sidebar.addItem("🚪", "Logout", this::logout);
 
         sidebar.select(0);
         root.add(sidebar, BorderLayout.WEST);
@@ -105,7 +105,7 @@ public class EmployeeDashboard extends JFrame {
         p.setOpaque(false);
 
         p.add(Theme.label(
-                "Hello, " + employee.getName() + " 👋",
+                "Hello, " + employee.getName(),
                 Theme.bold(22),
                 Theme.TEXT_PRIMARY
         ), BorderLayout.NORTH);
