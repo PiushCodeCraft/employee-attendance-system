@@ -45,7 +45,7 @@ public class AdminDashboard extends JFrame {
         root.add(buildTopBar(), BorderLayout.NORTH);
 
         sidebar = new SidebarPanel();
-        sidebar.addItem("⊞",  "Dashboard",      () -> showPanel(buildHomePanel()));
+        sidebar.addItem("🏠",  "Dashboard",      () -> showPanel(buildHomePanel()));
         sidebar.addItem("👥", "Employees",       () -> showPanel(new ManageEmployees(empService)));
         sidebar.addItem("📋", "Attendance",      () -> showPanel(new ViewAttendance(attService)));
         sidebar.addItem("🗓", "Leave Approvals", () -> showPanel(new LeaveApproval(leaveService)));
@@ -55,7 +55,7 @@ public class AdminDashboard extends JFrame {
         sidebar.addItem("📅", "Holidays",         () -> showPanel(new HolidayPanel(holidayService)));
         sidebar.addItem("⏱",  "Overtime",         () -> showPanel(new OvertimePanel(empService, attService)));
         // ─────────────────────────────────────────────────────────────────────
-        sidebar.addItem("⏻",  "Logout",           this::logout);
+        sidebar.addItem("🚪",  "Logout",           this::logout);
         sidebar.select(0);
         root.add(sidebar, BorderLayout.WEST);
 

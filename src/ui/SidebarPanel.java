@@ -73,7 +73,7 @@ public class SidebarPanel extends JPanel {
                 g2.setColor(new Color(255, 255, 255, 8));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
             }
-            g2.setFont(Theme.plain(16));
+            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
             g2.setColor(active ? Theme.ACCENT_BLUE : Theme.TEXT_SECONDARY);
             g2.drawString(icon, 16, 28);
             g2.setFont(Theme.bold(13));
