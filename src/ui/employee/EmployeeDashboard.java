@@ -47,11 +47,12 @@ public class EmployeeDashboard extends JFrame {
         root.add(buildTopBar(), BorderLayout.NORTH);
 
         sidebar = new SidebarPanel();
-        sidebar.addItem("⊞", "My Dashboard",   () -> showPanel(buildHomePanel()));
+        sidebar.addItem("⊞", "My Dashboard", () -> showPanel(buildHomePanel()));
         sidebar.addItem("🕐", "Mark Attendance", () -> showPanel(new MarkAttendance(employee, attService)));
-        sidebar.addItem("📋", "My Attendance",   () -> showPanel(new ViewMyAttendance(employee, attService)));
-        sidebar.addItem("🗓", "Apply Leave",     () -> showPanel(new ApplyLeave(employee, leaveService)));
-        sidebar.addItem("⏻", "Logout",          this::logout);
+        sidebar.addItem("📋", "My Attendance", () -> showPanel(new ViewMyAttendance(employee, attService)));
+        sidebar.addItem("🗓", "Apply Leave", () -> showPanel(new ApplyLeave(employee, leaveService)));
+        sidebar.addItem("⏻", "Logout", this::logout);
+
         sidebar.select(0);
         root.add(sidebar, BorderLayout.WEST);
 
@@ -114,7 +115,7 @@ public class EmployeeDashboard extends JFrame {
 
         LeaveBalance bal = leaveService.getLeaveBalance(employee.getEmpId());
 
-        JPanel cards = new JPanel(new GridLayout(1, 4, 16, 0));
+        JPanel cards = new JPanel(new GridLayout(1, 5, 16, 0));
         cards.setOpaque(false);
 
         if (bal != null) {
@@ -127,6 +128,13 @@ public class EmployeeDashboard extends JFrame {
         String shiftTime = employee.getShiftStart() != null ? employee.getShiftStart().toString() : "—";
         cards.add(buildShiftCard("My Shift", shiftText, shiftTime, Theme.ACCENT_ORANGE, "🕐"));
 
+        double totalOvertime = attService.getMyAttendance(employee.getEmpId())
+                .stream()
+                .mapToDouble(a -> a.getOvertimeHours())
+                .sum();
+
+        cards.add(buildOvertimeCard("My Overtime", totalOvertime, Theme.ACCENT_PURPLE, "⏱"));
+
         body.add(cards, BorderLayout.NORTH);
 
         JPanel midRow = new JPanel(new GridLayout(1, 2, 16, 0));
@@ -135,18 +143,32 @@ public class EmployeeDashboard extends JFrame {
         JPanel holCard = Theme.card();
         holCard.setLayout(new BorderLayout(0, 8));
         holCard.setBorder(new EmptyBorder(16, 16, 16, 16));
-        holCard.add(Theme.label("Upcoming Holidays", Theme.bold(14), Theme.TEXT_PRIMARY), BorderLayout.NORTH);
+
+        JPanel holidayHeader = new JPanel(new BorderLayout());
+        holidayHeader.setOpaque(false);
+
+        holidayHeader.add(
+                Theme.label("Holiday Calendar", Theme.bold(14), Theme.TEXT_PRIMARY),
+                BorderLayout.WEST
+        );
+
+        JButton refreshHolidayBtn = Theme.button("↻ Refresh", Theme.ACCENT_BLUE);
+        refreshHolidayBtn.addActionListener(e -> showPanel(buildHomePanel()));
+
+        holidayHeader.add(refreshHolidayBtn, BorderLayout.EAST);
+        holCard.add(holidayHeader, BorderLayout.NORTH);
 
         JPanel holList = new JPanel();
         holList.setLayout(new BoxLayout(holList, BoxLayout.Y_AXIS));
         holList.setOpaque(false);
 
-        List<Holiday> upcoming = holidayService.getUpcoming();
+        List<Holiday> holidays = holidayService.getAll();
+        holidays.sort((h1, h2) -> h1.getDate().compareTo(h2.getDate()));
 
-        if (upcoming.isEmpty()) {
-            holList.add(Theme.label("No upcoming holidays.", Theme.plain(12), Theme.TEXT_MUTED));
+        if (holidays.isEmpty()) {
+            holList.add(Theme.label("No holidays added.", Theme.plain(12), Theme.TEXT_MUTED));
         } else {
-            for (Holiday h : upcoming.stream().limit(4).toList()) {
+            for (Holiday h : holidays) {
                 JPanel row = new JPanel(new BorderLayout());
                 row.setOpaque(false);
                 row.setBorder(new EmptyBorder(4, 0, 4, 0));
@@ -167,10 +189,13 @@ public class EmployeeDashboard extends JFrame {
             }
         }
 
-        holCard.add(holList, BorderLayout.CENTER);
+        JScrollPane holidayScroll = new JScrollPane(holList);
+        Theme.styleScrollPane(holidayScroll);
+        holCard.add(holidayScroll, BorderLayout.CENTER);
+
         midRow.add(holCard);
 
-        String[] cols = {"Date", "Check In", "Check Out", "Status", "Hours"};
+        String[] cols = {"Date", "Check In", "Check Out", "Status", "Hours", "Overtime"};
 
         Object[][] data = attService.getMyAttendance(employee.getEmpId())
                 .stream()
@@ -180,7 +205,8 @@ public class EmployeeDashboard extends JFrame {
                         utils.DateTimeUtil.formatTime(a.getCheckIn()),
                         utils.DateTimeUtil.formatTime(a.getCheckOut()),
                         a.getStatus(),
-                        String.format("%.2f hrs", a.getWorkingHours())
+                        String.format("%.2f hrs", a.getWorkingHours()),
+                        String.format("%.2f hrs", a.getOvertimeHours())
                 })
                 .toArray(Object[][]::new);
 
@@ -249,6 +275,27 @@ public class EmployeeDashboard extends JFrame {
         card.add(top, BorderLayout.NORTH);
         card.add(shiftLabel, BorderLayout.CENTER);
         card.add(timeLabel, BorderLayout.SOUTH);
+
+        return card;
+    }
+
+    private JPanel buildOvertimeCard(String title, double overtime, Color accent, String icon) {
+        JPanel card = Theme.card();
+        card.setLayout(new BorderLayout());
+        card.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+
+        top.add(Theme.label(title, Theme.plain(13), Theme.TEXT_SECONDARY), BorderLayout.WEST);
+        top.add(Theme.label(icon, Theme.plain(18), accent), BorderLayout.EAST);
+
+        JLabel overtimeLabel = Theme.label(String.format("%.2f", overtime), Theme.bold(32), accent);
+        JLabel sub = Theme.label("total overtime hrs", Theme.plain(11), Theme.TEXT_MUTED);
+
+        card.add(top, BorderLayout.NORTH);
+        card.add(overtimeLabel, BorderLayout.CENTER);
+        card.add(sub, BorderLayout.SOUTH);
 
         return card;
     }

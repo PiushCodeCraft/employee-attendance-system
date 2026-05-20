@@ -1,5 +1,9 @@
 package ui.admin;
 
+import java.awt.*;
+import java.time.LocalDate;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import models.Employee;
 import services.AttendanceService;
 import services.EmployeeService;
@@ -8,11 +12,6 @@ import services.LeaveService;
 import ui.LoginFrame;
 import ui.SidebarPanel;
 import utils.Theme;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.time.LocalDate;
 
 public class AdminDashboard extends JFrame {
 
@@ -52,7 +51,7 @@ public class AdminDashboard extends JFrame {
         sidebar.addItem("🗓", "Leave Approvals", () -> showPanel(new LeaveApproval(leaveService)));
         sidebar.addItem("📊", "Reports",         () -> showPanel(new ReportsPanel(empService, attService)));
         // ── NEW sidebar items ─────────────────────────────────────────────────
-        sidebar.addItem("🕐", "Shift Mgmt",      () -> showPanel(new ShiftManagement(empService)));
+        sidebar.addItem("🕒", "Shift Management", () -> showPanel(new ShiftManagement(empService)));
         sidebar.addItem("📅", "Holidays",         () -> showPanel(new HolidayPanel(holidayService)));
         sidebar.addItem("⏱",  "Overtime",         () -> showPanel(new OvertimePanel(empService, attService)));
         // ─────────────────────────────────────────────────────────────────────
